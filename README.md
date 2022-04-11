@@ -22,7 +22,23 @@ import CBiometric from "react-native-c-biometric";
 
 // ...
 
-<CBiometric />
+<CBiometric
+  bundleIdentifier="am.cdigital.biometric" //or you can use react-native-device-info -> DeviceInfo.getBundleId()
+  licenseKey="hgj23g4jh2g3h4jg23hjg4hj2g3jh4gjh23g4ghj23g4jh"
+  handleReady={(code) => console.log('log----------', code)}
+  errorView={(error) => (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'red',
+      }}
+    >
+      <Text style={{ color: 'white' }}>{error}</Text>
+    </View>
+  )}
+/>
 ```
 
 ## iOS - other required steps

@@ -27,7 +27,7 @@ export default function CBiometric({
   }, [handleReady]);
 
   useEffect(() => {
-    console.log('log----bundleId', DeviceInfo.getBundleId());
+    console.log('log----bundleId', deviceInfo.getBundleId());
     console.log('log----bundleIdentifier', bundleIdentifier);
     console.log('log----licenseKey', licenseKey);
 
