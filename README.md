@@ -2,13 +2,17 @@
 
 user identification
 
+https://mrzscanner.com/v1.x/knowledge/react-native mrzscanner documentation
+
+This package works only in real devices.
+
 ## Installation
 
 ```sh
-npm install react-native-c-biometric, react-native-camera
+npm install react-native-c-biometric
 ```
 ```sh
-yarn add react-native-c-biometric, react-native-camera
+yarn add react-native-c-biometric
 ```
 
 ## Usage
