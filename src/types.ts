@@ -1,22 +1,34 @@
 import type { ReactNode } from 'react';
 
-export interface LibProps {
+export interface ILibProps {
   bundleIdentifier: string;
   licenseKey: string;
   handleReady(statusCode: number): void;
-  errorView(error: string): ReactNode;
+  errorView?(error: string): ReactNode;
+  documentScannerView?(handleDocumentScan: (documentType: number) => void): JSX.Element | undefined;
 }
 
-interface Point<T = number> {
+export interface IDocumentScannerProps {
+  documentScannerView?(handleDocumentScan?: (documentType: number) => void): Element | undefined;
+}
+
+interface IPoint<T = number> {
   x: T;
   y: T;
 }
 
-interface Size<T = number> {
+interface ISize<T = number> {
   width: T;
   height: T;
 }
 
-export interface Face {
-  bounds: { origin: Point; size: Size };
+export interface IFace {
+  bounds: { origin: IPoint; size: ISize };
+}
+
+export enum DocumentType {
+  passport,
+  idCardFrontSide,
+  idCardBackSide,
+  fromGallery,
 }

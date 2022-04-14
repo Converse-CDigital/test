@@ -38,7 +38,23 @@ import CBiometric from "react-native-c-biometric";
       <Text style={{ color: 'white' }}>{error}</Text>
     </View>
   )}
+  documentScannerView={(handleDocumentScan: (documentType: number) => void) => (
+    <View>
+      <Button title="Passport Scanner" onPress={() => handleDocumentScan(0)} />
+      <Button title="ID Card Scanner" onPress={() => handleDocumentScan(1)} />
+    </View>
+  )}
 />
+```
+
+## Document Type Enum
+
+```ts
+enum DocumentType {
+  passport,
+  idCardFrontSide,
+  idCardBackSide,
+}
 ```
 
 ## iOS - other required steps
@@ -58,7 +74,7 @@ Add permissions with usage descriptions to your app *Info.plist*:
 <string>Your message to user when the photo library is accessed for the first time</string>
 ```
 
-## For Face Detection:
+## For IFace Detection:
 Add dependency towards react-native-camera in your Podfile with subspecs using one of the following:
 
 ```js

@@ -4,21 +4,21 @@ import { NativeModules, Platform, Text, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import DeviceInfo from 'react-native-device-info';
 
-import { ScannerKey } from './config';
-import type { Face, LibProps } from './types';
+import DocumentScanner from './document-scanner';
+import type { IFace, ILibProps } from './types';
 
 export default function CBiometric({
   bundleIdentifier,
   licenseKey,
   handleReady = () => undefined,
   errorView = () => undefined,
-}: LibProps) {
+  documentScannerView = () => undefined,
+}: ILibProps) {
   const deviceInfo = DeviceInfo;
-  const MrzScanner = NativeModules.RNMrzscannerlib;
   const [isCameraSupported, setIsCameraSupported] = useState<boolean>(false);
-  const [isLicenseWrong, setIsLicenseWrong] = useState<boolean | null>(null);
+  const [isLicenseOk, setIsLicenseOk] = useState<boolean | null>(null);
 
-  const handleFaceDetected = useCallback(async (_faceArray: { faces: Face[] }): Promise<void> => {
+  const handleFaceDetected = useCallback(async (_faceArray: { faces: IFace[] }): Promise<void> => {
     console.log('log--------faceArray', _faceArray.faces);
   }, []);
 
@@ -35,38 +35,24 @@ export default function CBiometric({
       deviceInfo.isCameraPresent().then((isCameraPresent) => {
         setIsCameraSupported(isCameraPresent);
       });
-    } else {
+    } else if (NativeModules.RNCameraManager)
       NativeModules.RNCameraManager.getCameraIds().then((camera: Array<never>) => {
         if (camera.length > 2) setIsCameraSupported(true);
       });
-    }
   }, [bundleIdentifier, deviceInfo, licenseKey]);
 
   useEffect(() => {
-    if (isCameraSupported && isLicenseWrong === false) {
-      MrzScanner.registerWithLicenseKey(ScannerKey);
-
-      MrzScanner.setExtractIdBackEnabled(true);
-      MrzScanner.setExtractFullPassportImageEnabled(true);
-      MrzScanner.setScannerType(0);
-      MrzScanner.startScanner();
-    } else {
-      MrzScanner.closeScanner();
-    }
-  }, [MrzScanner, deviceInfo, isCameraSupported, isLicenseWrong]);
-
-  useEffect(() => {
     if (DeviceInfo.getBundleId() === bundleIdentifier) {
-      setIsLicenseWrong(false);
+      setIsLicenseOk(false);
       ready();
     } else {
-      setIsLicenseWrong(true);
+      setIsLicenseOk(true);
     }
   }, [bundleIdentifier, ready]);
 
   return (
     <View style={{ flex: 1 }}>
-      {isCameraSupported && isLicenseWrong === false ? (
+      {isCameraSupported && isLicenseOk === false && false ? (
         <RNCamera
           style={{
             flex: 1,
@@ -95,13 +81,17 @@ export default function CBiometric({
         />
       ) : null}
 
+      {isCameraSupported && !isLicenseOk ? (
+        <DocumentScanner documentScannerView={documentScannerView} />
+      ) : null}
+
       {!isCameraSupported ? (
         <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
           <Text>Camera is not supported</Text>
         </View>
       ) : null}
 
-      {isLicenseWrong ? errorView('string') : null}
+      {isLicenseOk ? errorView('string') : null}
     </View>
   );
 }
